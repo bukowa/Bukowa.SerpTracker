@@ -35,9 +35,9 @@ public class SchedulerUnitTest
     List<Project> prs => Projects;
     List<SearchResults> srs => SearchResults;
 
-    class SearchEngine : ISearchResultsEngine
+    class SearchEngine : ISearchService
     {
-        public SearchResults? Search(Project project, string query)
+        public async Task<SearchResults?> Search(Project project, string query)
         {
             if (project.Name == "invalid")
                 return null;
@@ -63,16 +63,13 @@ public class SchedulerUnitTest
         var searchService = new SearchResultsService(database.Database);
         var projectsService = new ProjectsService(database.Database);
 
-        var schedulerSettings = new SchedulerSettings()
+        var config = new SchedulerConfig
         {
             Interval = TimeSpan.FromSeconds(1),
-            ProjectsService = projectsService,
-            SearchResultsService = searchService,
-            SearchEngine = new SearchEngine(),
             WaitFor = TimeSpan.FromMilliseconds(10),
         };
 
-        var scheduler = new Scheduler();
+        var scheduler = new SearchScheduler(null, new SearchEngine(), projectsService, searchService, config);
         var cncToken = new CancellationTokenSource();
         _ = Task.Run(async () =>
         {
@@ -80,7 +77,7 @@ public class SchedulerUnitTest
             await cncToken.CancelAsync();
         });
         
-        await scheduler.StartAsync(schedulerSettings, cncToken.Token);
+        await scheduler.StartAsync(cncToken.Token);
         Assert.Equal(5, searchService.All().Count());
     }
     

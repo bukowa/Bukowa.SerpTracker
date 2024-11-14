@@ -5,16 +5,22 @@ namespace Bukowa.SerpTracker;
 /// <summary>
 /// Used for searching.
 /// </summary>
-public interface ISearchResultsEngine
+public interface ISearchService
 {
-    public SearchResults? Search(Project project, string query);
+    public Task<SearchResults?> Search(Project project, string query);
 }
 
+/// <summary>
+/// Used for gathering all projects.
+/// </summary>
 public interface IProjectsService
 {
     public IEnumerable<Project> All();
 }
 
+/// <summary>
+/// Used for gathering all search results.
+/// </summary>
 public interface ISearchResultsService
 {
     public IEnumerable<SearchResults> All();
@@ -22,7 +28,7 @@ public interface ISearchResultsService
 }
 
 /// <summary>
-/// Database implementation.
+/// Database implementation for projects gathering.
 /// </summary>
 /// <param name="database"></param>
 public class ProjectsService(Database database) : IProjectsService
@@ -31,7 +37,7 @@ public class ProjectsService(Database database) : IProjectsService
 }
 
 /// <summary>
-/// Database implementation.
+/// Database implementation for search results gathering.
 /// </summary>
 /// <param name="database"></param>
 public class SearchResultsService(Database database) : ISearchResultsService
@@ -40,35 +46,47 @@ public class SearchResultsService(Database database) : ISearchResultsService
     public bool Insert(SearchResults searchResults) => database.Locked(db => db.SearchResults.Insert(searchResults));
 }
 
-public class SchedulerSettings
+/// <summary>
+/// Settings for configuring scheduler.
+/// </summary>
+public class SchedulerConfig
 {
     public required TimeSpan WaitFor { get; set; } = TimeSpan.FromSeconds(10);
     public required TimeSpan Interval { get; set; } = TimeSpan.FromHours(24);
-    public required ISearchResultsEngine SearchEngine { get; set; }
-    public required IProjectsService ProjectsService { get; set; }
-    public required ISearchResultsService SearchResultsService { get; set; }
 }
 
-public class Scheduler
+/// <summary>
+/// Loop performing searching.
+/// </summary>
+public class SearchScheduler
 {
-    ILogger? _logger;
+    readonly ILogger? _logger;
+    readonly ISearchService _searchEngine;
+    readonly IProjectsService _projectsService;
+    readonly ISearchResultsService _searchResultsService;
+    readonly SchedulerConfig _config;
 
-    public Scheduler(ILogger? logger)
+    public SearchScheduler(
+        ILogger? logger,
+        ISearchService searchEngine,
+        IProjectsService projectsService,
+        ISearchResultsService searchResultsService,
+        SchedulerConfig config)
     {
         _logger = logger;
+        _searchEngine = searchEngine;
+        _projectsService = projectsService;
+        _searchResultsService = searchResultsService;
+        _config = config;
     }
 
-    public Scheduler()
-    {
-    }
-
-    public async Task StartAsync(SchedulerSettings settings, CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
             _logger?.LogInformation("Starting Scheduler");
 
-            foreach (var project in settings.ProjectsService.All())
+            foreach (var project in _projectsService.All())
             {
                 if (cancellationToken.IsCancellationRequested)
                     goto Finish;
@@ -78,18 +96,18 @@ public class Scheduler
                     if (cancellationToken.IsCancellationRequested)
                         goto Finish;
 
-                    var searchResults = settings.SearchResultsService.All();
+                    var searchResults = _searchResultsService.All();
 
                     var lastSearchResult = searchResults
                         .Where(s => s.Query == projectQuery)
                         .OrderByDescending(s => s.Date)
                         .FirstOrDefault();
 
-                    if (lastSearchResult == null || DateTime.UtcNow - lastSearchResult.Date >= settings.Interval)
+                    if (lastSearchResult == null || DateTime.UtcNow - lastSearchResult.Date >= _config.Interval)
                     {
                         try
                         {
-                            var response = settings.SearchEngine.Search(project, projectQuery);
+                            var response = await _searchEngine.Search(project, projectQuery);
 
                             _logger?.LogInformation(
                                 "Querying " +
@@ -105,7 +123,7 @@ public class Scheduler
 
                             if (response != null)
                             {
-                                settings.SearchResultsService.Insert(response);
+                                _searchResultsService.Insert(response);
                             }
                         }
 
@@ -127,7 +145,7 @@ public class Scheduler
 
             try
             {
-                await Task.Delay(settings.WaitFor, cancellationToken);
+                await Task.Delay(_config.WaitFor, cancellationToken);
             }
             catch (TaskCanceledException)
             {
@@ -135,6 +153,7 @@ public class Scheduler
                 goto Finish;
             }
         }
+
         Finish:
         _logger?.LogInformation("Scheduler finished");
         return;
