@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Bukowa.SerpTracker.UnitTest;
 
 public class RankingUnitTest
@@ -24,13 +26,13 @@ public class RankingUnitTest
         {
             Query = "query1",
             Date = new DateTime(2000, 1, 1, 8, 0, 0),
-            Urls = ["url1"],
+            Urls = ["x", "y", "url1", "z"],
         },
         new()
         {
             Query = "query2",
             Date = new DateTime(2001, 1, 1, 5, 0, 0),
-            Urls = ["url1", "url2"],
+            Urls = ["url1", "x", "y", "z", "url2"],
         },
         new()
         {
@@ -71,7 +73,7 @@ public class RankingUnitTest
         Assert.Equal(["query1", "query2", "query3", "query5"], nodes[1].Project.Queries);
 
         Assert.Equal(["url1", "url2", "url555"], nodes[0].Project.Urls);
-        Assert.Equal(["url3"], nodes[1].Project.Urls);
+        Assert.Equal(["url3", "url2", "url1"], nodes[1].Project.Urls);
 
         Assert.Equal(3, nodes[0].Nodes.Count);
         Assert.Equal(4, nodes[1].Nodes.Count);
@@ -93,15 +95,7 @@ public class RankingUnitTest
             Assert.Equal(Projects[1].Queries[i], nodes[1].Nodes[i].Query);
             Assert.Equal(Projects[1].Urls, nodes[1].Nodes[i].Nodes.Select(n => n.Url));
         }
-    }
-
-    /// <summary>
-    /// Make sure are calculations are correct.
-    /// </summary>
-    [Fact]
-    public void TestGetProject_Calculations()
-    {
-        var nodes = Ranking.CalculateNodes(Projects, SearchResults);
+        
         
         // project 0 query 0 urls
         Assert.Equal(
@@ -201,5 +195,51 @@ public class RankingUnitTest
             nodes[1].Nodes[3].Nodes[2].SearchResults
         );
 
+    }
+
+    /// <summary>
+    /// Make sure are calculations are correct.
+    /// </summary>
+    [Fact]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public void TestGetProject_Calculations()
+    {
+        var nodes = Ranking.CalculateNodes(Projects, SearchResults);
+        
+        var pr0qr0 = nodes[0].Nodes[0];
+        Assert.Equal(3, pr0qr0.Nodes[0].Position);
+        Assert.Equal(0, pr0qr0.Nodes[1].Position);
+        Assert.Equal(0, pr0qr0.Nodes[2].Position);
+        
+        var pr0qr1 = nodes[0].Nodes[1];
+        Assert.Equal(0, pr0qr1.Nodes[0].Position);
+        Assert.Equal(1, pr0qr1.Nodes[1].Position);
+        Assert.Equal(0, pr0qr1.Nodes[2].Position);
+        
+        var pr0qr2 = nodes[0].Nodes[2];
+        Assert.Equal(0, pr0qr2.Nodes[0].Position);
+        Assert.Equal(0, pr0qr2.Nodes[1].Position);
+        Assert.Equal(0, pr0qr2.Nodes[2].Position);
+        
+        var pr1qr0 = nodes[1].Nodes[0];
+        Assert.Equal(0, pr1qr0.Nodes[0].Position);
+        Assert.Equal(0, pr1qr0.Nodes[1].Position);
+        Assert.Equal(3, pr1qr0.Nodes[2].Position);
+        
+        var pr1qr1 = nodes[1].Nodes[1];
+        Assert.Equal(0, pr1qr1.Nodes[0].Position);
+        Assert.Equal(1, pr1qr1.Nodes[1].Position);
+        Assert.Equal(0, pr1qr1.Nodes[2].Position);
+        
+        var pr1qr2 = nodes[1].Nodes[2];
+        Assert.Equal(2, pr1qr2.Nodes[0].Position);
+        Assert.Equal(0, pr1qr2.Nodes[1].Position);
+        Assert.Equal(1, pr1qr2.Nodes[2].Position);
+        
+        var pr1qr3 = nodes[1].Nodes[3];
+        Assert.Equal(0, pr1qr3.Nodes[0].Position);
+        Assert.Equal(0, pr1qr3.Nodes[1].Position);
+        Assert.Equal(0, pr1qr3.Nodes[2].Position);
+        
     }
 }
