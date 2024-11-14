@@ -86,6 +86,11 @@ public class GoogleSearchExecutor : IGoogleSearchExecutor
                 throw new Exception("Recaptcha detected");
             }
 
+            if (!browser.Address.Contains(config.Url))
+            {
+                throw new Exception($"Error loading url for uuid: {uuid}");
+            }
+            
             _logger?.LogInformation("Executing javascript...");
             var text = await browser.EvaluateScriptAsync(
                 """
@@ -112,7 +117,9 @@ public class GoogleSearchExecutor : IGoogleSearchExecutor
                 Urls = urls.ToArray(),
                 Query = config.Query,
             };
+            _logger?.LogInformation("Found {results} for {query}", searchResults.Urls.Length, config.Query);
         }
+        
         catch (Exception exc)
         {
             _logger?.LogError(exc, "An error occured while searching for Google Search results in uuid: {uuid}", uuid);
