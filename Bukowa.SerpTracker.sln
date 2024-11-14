@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bukowa.SerpTracker", "Bukow
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bukowa.SerpTracker.UnitTest", "Bukowa.SerpTracker.UnitTest\Bukowa.SerpTracker.UnitTest.csproj", "{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bukowa.SerpTracker.CefSharp", "Bukowa.SerpTracker.CefSharp\Bukowa.SerpTracker.CefSharp.csproj", "{758D2BF9-C38D-4916-8DE1-5B6209334B92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{758D2BF9-C38D-4916-8DE1-5B6209334B92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{758D2BF9-C38D-4916-8DE1-5B6209334B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{758D2BF9-C38D-4916-8DE1-5B6209334B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{758D2BF9-C38D-4916-8DE1-5B6209334B92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
