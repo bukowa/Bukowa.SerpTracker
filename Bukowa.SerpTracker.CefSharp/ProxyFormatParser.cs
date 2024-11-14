@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 
-namespace Bukowa.SerpTracker.CefSharp.Proxies;
+namespace Bukowa.SerpTracker.CefSharp;
 
 public class ExceptionInvalidProxyFormat(string message) : Exception(message);
 

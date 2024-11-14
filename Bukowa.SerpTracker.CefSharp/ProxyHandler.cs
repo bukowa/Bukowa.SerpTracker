@@ -1,7 +1,7 @@
 ﻿using CefSharp;
 using CefSharp.Handler;
 
-namespace Bukowa.SerpTracker.CefSharp.Proxies;
+namespace Bukowa.SerpTracker.CefSharp;
 
 public class ProxyRequestHandler(string user, string password) : RequestHandler
 {
