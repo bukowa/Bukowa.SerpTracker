@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Platforms>x64</Platforms>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -19,12 +19,27 @@
         </PackageReference>
     </ItemGroup>
 
+
+    <PropertyGroup Condition="'$(PlatformTarget)' == 'x86'">
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x86</RuntimeIdentifier>
+        <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PlatformTarget)' == 'x64'">
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+        <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+    </PropertyGroup>
+
     <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Bukowa.SerpTracker\Bukowa.SerpTracker.csproj" />
+      <ProjectReference Include="..\Bukowa.SerpTracker.CefSharp\Bukowa.SerpTracker.CefSharp.csproj" />
     </ItemGroup>
+
+    <Target Name="CefSharpAfterBuildDebug" AfterTargets="AfterBuild">
+        <CallTarget Targets="CefSharpAfterBuildDiagnostic" />
+    </Target>
 
 </Project>
