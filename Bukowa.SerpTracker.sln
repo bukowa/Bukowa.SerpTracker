@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bukowa.SerpTracker", "Bukowa.SerpTracker\Bukowa.SerpTracker.csproj", "{CDA6BF76-BBAE-4470-9EEE-2CA774A945E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bukowa.SerpTracker.UnitTest", "Bukowa.SerpTracker.UnitTest\Bukowa.SerpTracker.UnitTest.csproj", "{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDA6BF76-BBAE-4470-9EEE-2CA774A945E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA6BF76-BBAE-4470-9EEE-2CA774A945E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA6BF76-BBAE-4470-9EEE-2CA774A945E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA6BF76-BBAE-4470-9EEE-2CA774A945E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F2D1E66-8EB2-41B4-9651-8CD73966E17F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
