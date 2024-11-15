@@ -10,6 +10,7 @@ public class Database : IDisposable
     public Database(string path="data.db")
     {
         DB = new LiteDatabase(path);
+        Projects.EnsureIndex(x=>x.Name, unique: true);
     }
 
     public void Dispose()

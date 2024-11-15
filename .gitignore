@@ -6,3 +6,4 @@ riderModule.iml
 .idea
 Bukowa.SerpTracker.sln.DotSettings.user
 .vs
+Bukowa.SerpTracker.WebAPI/*.db

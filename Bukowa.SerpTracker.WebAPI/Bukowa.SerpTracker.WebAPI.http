@@ -1,0 +1,18 @@
+@WebAPI_HostAddress = http://localhost:5007
+
+POST {{WebAPI_HostAddress}}/Projects
+Content-Type: application/json
+Accept: application/json
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+
+{
+  "name": "{{$random.uuid}}",
+  "queries": [
+    "string"
+  ],
+  "urls": [
+    "string"
+  ]
+}
+> {% client.test("Setup request succeeded", function() { client.assert(response.status === 204); }); %}
